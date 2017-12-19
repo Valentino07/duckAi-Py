@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Duck Sign Up</title>
+
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
+</head>
+<body>
+
+	<div class="pageTitleBar">
+		<span>Duck Enrollment</span>
+	</div>
+
+	<div class="pageMargins">
+		<div id="enrollDirections">
+			<p>Click the Button to record your voice</p>
+			
+			<p>Directions: First click the "Click to Record" button below the text saying "Hey Duck I'm Entering". Once you click on that button say "Hey Duck I'm Entering!". Do this 3 times and then move onto the next button below "Hey Duck I'm Leaving!". Repeat all the steps you did before except this time say "Hey Duck I'm Leaving!". After you've recorded your voice for a total of 6 times you will be redirected to the next and final step.
+			</p>
+		</div>
+
+		<br/><br/>
+
+		<div id="enrollmentContainer">
+			<p style="text-align: center">Say, "Hey Duck I'm Entering!"</p>
+			<form id="enteringEnrollmentForm" method="post" onsubmit="setRecordingStatus()">
+					<input class="recordVoiceButton" type="submit" name="enrollVoice" value="Click to Record" >
+			</form>
+			
+			<p style="text-align: center">Say, "Hey Duck I'm Leaving!"</p>
+			<form method="post" onsubmit="setRecordingStatus()">
+					<input class="recordVoiceButton" type="submit" name="enrollVoice" value="Click to Record">
+			</form>
+			
+		</div>
+
+		<div id="recStatusContainer">
+			<p>{{numberOfTimesEnrolled}}</p>
+			<img id="recordingStatusImg" width="5%" src="../static/mic.png"/>
+			<p id="recordingStatusText">Not Recording...</p>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+	integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+	crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/core.js"></script>
+	<script type="text/javascript" src="{{url_for('static', filename='script.js')}}"></script>
+	
+	<script type="text/javascript">
+		var numberOfTimesEnrolled = 6
+		var demo = String({{data.recordingAudio}});
+		console.log(demo);
+		var recordingStatusText = document.getElementById('recordingStatusText');
+		var recordingStatusImg = document.getElementById('recordingStatusImg')
+
+		window.onload = function(){ 
+			recordingStatusText.innerHTML = "Not Recording..."
+			recordingStatusImg.src = "../static/mic.png"
+			console.log(recordingStatus)
+		}
+
+		function setRecordingStatus(){
+
+			recordingStatusText.innerHTML = "Recording..."
+			recordingStatusImg.src = "../static/micRec.png"
+			console.log(recordingStatus)
+
+		}
+
+	</script>
+</body>
+</html>
