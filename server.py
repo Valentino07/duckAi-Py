@@ -19,7 +19,7 @@ from EnrollProfile import enroll_profile
 from EnrollmentResponse import EnrollmentResponse
 from IdentificationServiceHttpClientHelper import IdentificationServiceHttpClientHelper
 
-filePath = "/Users/txt-19/Desktop/duckV2/audioRecorder/"
+filePath = "/Users/duoma/Desktop/ducky/audioRecorder/"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -63,8 +63,7 @@ def index():
 def enrollVoice():
 
 	# The path where the audio file is stored, the specific .wav file used to record this is added to the var filePath
-	filePath = "/Users/txt-19/Desktop/duckV2/"
-	sendForm = False
+	filePath = "/Users/duoma/Desktop/ducky/"
 	error = None
 	global numberOfTimesEnrolled
 	global recordingAudio

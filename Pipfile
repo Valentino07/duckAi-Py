@@ -12,6 +12,8 @@ flask = "*"
 pymongo = "*"
 pyaudio = "*"
 sphinx = "*"
+pyttsx = "*"
+"pyttsx3" = "*"
 
 
 [dev-packages]

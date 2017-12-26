@@ -5,6 +5,7 @@
 import sys
 sys.path.append('../Identification')
 sys.path.append('../audioRecorder')
+import os
 from os import system
 import time
 from datetime import datetime
@@ -20,7 +21,7 @@ from recordVoice import *
 # Speech to Text
 import speech_recognition as sr
 
-# Test to Speech
+# Text to Speech
 import pyttsx3
 
 # Audiofile to Text
@@ -49,7 +50,12 @@ subscriptionKey = 'b51342b216294701b97755a73f959ba4'
 duckQueryInit = False
 
 # Sets input device
-# p = pyaudio.PyAudio()
+CHUNK_SIZE = 64700
+FORMAT = pyaudio.paInt16
+RATE = 211600
+
+#p = pyaudio.PyAudio()
+os.system("start ../vgBeep.wav")
 # info = p.get_host_api_info_by_index(0)
 # numdevices = info.get('deviceCount')
 # for i in range(0, numdevices):
@@ -140,7 +146,7 @@ def listen():
 			print("Recording Audio...")
 			recordVoice()
 			print("Done Recording!")
-			newFilePath = '/Users/duoma/Desktop/ducky/duckRecognition/RECORDING1.wav'
+			newFilePath = '/Users/duoma/Desktop/ducky/duckRecognition/'+str(recordVoice.FULL_FILE_NAME)
 			print("newFilePath = "+ newFilePath)
 			audioTranscripter(newFilePath)
 			
@@ -149,9 +155,9 @@ def listen():
 
 			for user in userProfiles.find():
 				userIds = user['profileId']
-				allUserIds.append(userIds)
-			# for user in userProfiles.find():
-			# 	user.append('allUserIds')
+				if userIds not in allUserIds:
+					allUserIds.append(userIds)
+					print(allUserIds)
 
 
 			identifiedSpeaker = ""
@@ -159,33 +165,37 @@ def listen():
 			if "I'm entering" in str(audioTranscripter.speechRecognized):
 				print("Processing your input...")
 				system('say Processing your input...')
-
 				identify_file(subscriptionKey, newFilePath, True, allUserIds)
 
-				# Based on the ID returned it assigns that ID to a specific person
-				for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-					identifiedSpeaker = user['fullName']
-					print("Identified Speaker = " + identifiedSpeaker)
+				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
+					system("say Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					print("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+				else:
+					# Based on the ID returned it assigns that ID to a specific person
+					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}): 
+						identifiedSpeaker = user['fullName']
+						print("Identified Speaker = " + identifiedSpeaker)
 
-				for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-					parentPhoneNumber = user['parentPhoneNumber']
-					print("parentPhoneNumber = " + parentPhoneNumber)
+					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
+						parentPhoneNumber = user['parentPhoneNumber']
+						print("parentPhoneNumber = " + parentPhoneNumber)
 
-				# Says welcome to the Identified Speaker
-				print("Welcome " + identifiedSpeaker)
-				system("say Welcome" + identifiedSpeaker)
-				sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
+					# Says welcome to the Identified Speaker
+					print("Welcome " + identifiedSpeaker)
+					system("say Welcome" + identifiedSpeaker)
+					#sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
 
-				userData = {
-					"fullName":identifiedSpeaker,
-					"profileId":identify_file.identifiedSpeakerId,
-					"trafficQuery":"Entered",
-					"date": date,
-					"time": clockTime
-				}
-				db.traffic.insert(userData)
-				allUserIds = []
-				duckQueryInit = False
+					userData = {
+						"fullName":identifiedSpeaker,
+						"profileId":identify_file.identifiedSpeakerId,
+						"trafficQuery":"Entered",
+						"date": date,
+						"time": clockTime
+					}
+
+					db.traffic.insert(userData)
+					allUserIds = []
+					duckQueryInit = False
 
 			# Handles cases when the user says they're leaving	
 			elif "I'm leaving" in str(audioTranscripter.speechRecognized):
@@ -195,33 +205,37 @@ def listen():
 				
 				identify_file(subscriptionKey, newFilePath, True, allUserIds)
 
-				# Based on the ID returned it assigns that ID to a specific person
-				for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-					identifiedSpeaker = user['fullName']
-					print("Identified Speaker = " + identifiedSpeaker)
+				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
+					system("say Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					print("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+				else:
+					# Based on the ID returned it assigns that ID to a specific person
+					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
+						identifiedSpeaker = user['fullName']
+						print("Identified Speaker = " + identifiedSpeaker)
 
 
-				for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-					parentPhoneNumber = user['parentPhoneNumber']
-					print("parentPhoneNumber = " + parentPhoneNumber)
+					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
+						parentPhoneNumber = user['parentPhoneNumber']
+						print("parentPhoneNumber = " + parentPhoneNumber)
 
-				print("Welcome " + identifiedSpeaker)
-				# Says good bye to the Identified Speaker
-				system("say Goodbye "+identifiedSpeaker)
-				duckQueryInit = False
-				sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
+					print("Welcome " + identifiedSpeaker)
+					# Says good bye to the Identified Speaker
+					system("say Goodbye "+ identifiedSpeaker)
+					duckQueryInit = False
+					#sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
 
-				userData = {
-					"fullName":identifiedSpeaker,
-					"profileId":identify_file.identifiedSpeakerId,
-					"trafficQuery":"Left",
-					"date": date,
-					"time": clockTime
-				}
-				db.traffic.insert(userData)
-				allUserIds = []
+					userData = {
+						"fullName":identifiedSpeaker,
+						"profileId":identify_file.identifiedSpeakerId,
+						"trafficQuery":"Left",
+						"date": date,
+						"time": clockTime
+					}
+					db.traffic.insert(userData)
+					allUserIds = []
 			else:
-				system("say say Hey Duck I'm Entering or Hey Duck I'm Leaving")
+				system("say Say Hey Duck I'm Entering or Hey Duck I'm Leaving")
 
 	except sr.UnknownValueError:
 		print("Google Speech Recognition could not understand audio")
@@ -230,13 +244,9 @@ def listen():
 
 starttime=time.time()
 
+# Allows the duck to continuously run
 while True:
 	listen()
 	print("duckQueryInit = " + str(duckQueryInit))
 	print ("tick")
-	time.sleep(1.0 - ((time.time() - starttime) % 1.0))
-
-#!/usr/bin/env python3                                                                                
-                                                                                                      
- 
-# get audio from the microphone                                                                       
+	time.sleep(1.0 - ((time.time() - starttime) % 1.0))                                                                 
