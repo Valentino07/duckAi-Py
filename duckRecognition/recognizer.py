@@ -18,6 +18,10 @@ from IdentifyFile import *
 # Audio Recorder
 from recordVoice import *
 
+# Pygame (Plays Audio File)
+import pygame
+from pygame import mixer
+
 # Speech to Text
 import speech_recognition as sr
 
@@ -54,19 +58,22 @@ CHUNK_SIZE = 64700
 FORMAT = pyaudio.paInt16
 RATE = 211600
 
-#p = pyaudio.PyAudio()
-os.system("start ../vgBeep.wav")
-# info = p.get_host_api_info_by_index(0)
-# numdevices = info.get('deviceCount')
-# for i in range(0, numdevices):
-#         if (p.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels')) > 0:
-#             print ("Input Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))
-# devinfo = p.get_device_info_by_index(1)
-# print(devinfo)
+
+mixer.init()
+mixer.music.load('C:/Users/duoma/Desktop/ducky/vgBeep2.wav')
+
+groupQueryInit = False
+# mixer.init()
+# mixer.pre_init(frequency=0 ,size=16,channels=2)
+# print("mixer initialized")
+# mixer.music.load('C:/Users/duoma/Desktop/ducky/vgBeep2.wav')
+# print("sound FX loaded")
+
 def listen():
 	# Gives function access to outside variables
 	global userSpeech 
 	global duckQueryInit
+	global groupQueryInit
 
 	conversationInit = False
 	# Record Audio
@@ -93,10 +100,19 @@ def listen():
 			elif "Shut up duck" in userSpeech:
 				system("Well that's rude")
 
-			if "Hey Duck" in userSpeech:
-				print("Hello, say hey duck i'm entering. or say hey duck i'm leaving")
-				system("say Hello, say hey duck i'm entering. or say hey duck i'm leaving")
+			if groupQueryInit:
+				system("say Say hey duck i'm entering. or say hey duck i'm leaving")
+				print("say hey duck i'm entering. or say hey duck i'm leaving")
+				print("playing sound FX...")
+				mixer.music.play(loops = 0, start = 0.0)
 				duckQueryInit = True
+
+			if "Hey Duck" in userSpeech:
+				system("say Hello, what group are you from?")
+				print("Hello, what group are you from?")
+				
+				mixer.music.play(loops = 0, start = 0.0)
+				groupQueryInit = True
 
 			elif "hey duck" in userSpeech:
 				system('say Hello, are you entering or leaving')
@@ -114,7 +130,6 @@ def listen():
 				duckQueryInit = True
 
 		# Look for a audio file to text converter, you send the audio file to a funciton and it outputs text
-		
 		while duckQueryInit:
 			global allUserIds
 			now = datetime.now()
