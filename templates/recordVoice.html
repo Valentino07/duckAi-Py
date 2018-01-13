@@ -1,75 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<title>Duck Sign Up</title>
+	<head>
+		<title>RecordVoice</title>
+		<link rel="stylesheet" href="../static/style.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
 
-	<link rel="stylesheet" type="text/css" href="../static/style.css">
-</head>
-<body>
+	<body>
+		<div class="pageTitleBar content-block">
+			<span><h1>Duck Enrollment</h1></span>
+			<div class = "check1">
+				<img  src="../static/greenCheck.png">
+				<p class="step1">Begin</h1>
+			</div>
 
-	<div class="pageTitleBar">
-		<span>Duck Enrollment</span>
-	</div>
+			<div class = "check2">
+				<img  src="../static/grayCheck.png">
+				<p class="step2">Record </h1>
+			</div>
 
-	<div class="pageMargins">
-		<div id="enrollDirections">
-			<p>Click the Button to record your voice</p>
-			
-			<p>Directions: First click the "Click to Record" button below the text saying "Hey Duck I'm Entering". Once you click on that button say "Hey Duck I'm Entering!". Do this 3 times and then move onto the next button below "Hey Duck I'm Leaving!". Repeat all the steps you did before except this time say "Hey Duck I'm Leaving!". After you've recorded your voice for a total of 6 times you will be redirected to the next and final step.
-			</p>
+			<div class = "check3">
+				<img  src="../static/grayCheck.png">
+				<p class="step3">Enroll </h1>
+			</div>
 		</div>
-
-		<br/><br/>
 
 		<div id="enrollmentContainer">
-			<p style="text-align: center">Say, "Hey Duck I'm Entering!"</p>
-			<form id="enteringEnrollmentForm" method="post" onsubmit="setRecordingStatus()">
-					<input class="recordVoiceButton" type="submit" name="enrollVoice" value="Click to Record" >
-			</form>
-			
-			<p style="text-align: center">Say, "Hey Duck I'm Leaving!"</p>
-			<form method="post" onsubmit="setRecordingStatus()">
-					<input class="recordVoiceButton" type="submit" name="enrollVoice" value="Click to Record">
-			</form>
-			
+			<p id="firstInstruction">Record yourself saying each phrase once.</p>
+			<!--             <form id="enteringEnrollmentForm" method="post" onsubmit="setRecordingStatus()">
+			<button class="recordVoiceButton" type="submit" name="enrollVoice" value=" ">
+			<img class = "micImg" src="../static/mic.png">
+			</button>
+			=            </form>
+			-->            
+			<p id="phrase">Say, "Hey Duck I'm Entering!"</p>
+
+			<div class="recStatusContainer">
+				<label>Amount of time needed to record:</label>
+				<p id="numEnrolled">{{numberOfTimesEnrolled}}</p>
+			</div>
+
+			<div>
+				<form method="post">
+					<button id="recordVoiceButton" type="submit" name="enrollVoice" value=" ">
+					<img class = "micImg" src="../static/mic.png">
+					</button>
+				</form>
+			</div>
+			<!-- I changed the recStatus Container into a class. -->
+			<!-- I put the number of times enrolled Above . -->
+			<div class="recStatusContainer">
+				<p id="recordingStatusText">Not Recording...</p>
+			</div>
 		</div>
 
-		<div id="recStatusContainer">
-			<p>{{numberOfTimesEnrolled}}</p>
-			<img id="recordingStatusImg" width="5%" src="../static/mic.png"/>
-			<p id="recordingStatusText">Not Recording...</p>
-		</div>
-	</div>
-	
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-	integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
-	crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/core.js"></script>
-	<script type="text/javascript" src="{{url_for('static', filename='script.js')}}"></script>
-	
-	<script type="text/javascript">
-		var numberOfTimesEnrolled = 6
-		var demo = String({{data.recordingAudio}});
-		console.log(demo);
-		var recordingStatusText = document.getElementById('recordingStatusText');
-		var recordingStatusImg = document.getElementById('recordingStatusImg')
+		<script>
+			rvc = document.getElementById('recordVoiceButton')
 
-		window.onload = function(){ 
-			recordingStatusText.innerHTML = "Not Recording..."
-			recordingStatusImg.src = "../static/mic.png"
-			console.log(recordingStatus)
-		}
+			function startRecording(){
+				rvc.style.backgroundColor = "red"
+				document.getElementById('recordingStatusText').innerHTML = "Recording..."
+			}
 
-		function setRecordingStatus(){
+			
 
-			recordingStatusText.innerHTML = "Recording..."
-			recordingStatusImg.src = "../static/micRec.png"
-			console.log(recordingStatus)
+			function finishRecordng(){
 
-		}
+				rvc.style.backgroundColor = "#6FCF97"
+				document.getElementById('recordingStatusText').innerHTML = "Processing..."
 
-	</script>
-</body>
+			}
+
+			var timesEnrolled = (document.getElementById('numEnrolled').innerHTML).split("Amount of time needed to record:")
+			console.log(timesEnrolled)
+			initLeavingPhrase1 = timesEnrolled[0].includes("1")
+			initLeavingPhrase2 = timesEnrolled[0].includes("2")
+			initLeavingPhrase3 = timesEnrolled[0].includes("3")
+
+			if (initLeavingPhrase1){
+				console.log("works")
+				document.getElementById("phrase").innerHTML = "Hey Duck I'm Leaving!"
+			}
+			if (initLeavingPhrase2){
+				console.log("works")
+				document.getElementById("phrase").innerHTML = "Hey Duck I'm Leaving!"
+			}
+			if (initLeavingPhrase3){
+				console.log("works")
+				document.getElementById("phrase").innerHTML = "Hey Duck I'm Leaving!"
+			}
+
+
+			rvc.onclick = function(){
+				startRecording()
+				setTimeout(finishRecordng, 5000)
+			}
+
+
+
+		</script>
+
+	</body>
 </html>

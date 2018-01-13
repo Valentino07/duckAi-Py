@@ -1,108 +1,237 @@
-@import url('https://fonts.googleapis.com/css?family=Comfortaa');
-
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,300i,400,700');
 body{
-	font-family: 'Comfortaa', cursive;
-	margin: 0;
-	/*background: linear-gradient( rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1) ), url("white-bg.jpg");*/
-	background-color: #fff;
-	background-size: cover;
+    margin: 0;
+}
+form{
+    margin: auto;
+    position: relative;
+    width: 100%;
+    height: 100%;
+
 }
 
-/* Animations (I got this from hover.css) */
-/* Grow */
-.hvr-grow {
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px transparent;
-  -webkit-transition-duration: 0.3s;
-  transition-duration: 0.3s;
-  -webkit-transition-property: transform;
-  transition-property: transform;
+.inputContainer {
+    margin: auto;
+    left: 50%;
+    width: 65%;
+    overflow: hidden;
+    margin-top: 7.5%;
 }
-.hvr-grow:hover, .hvr-grow:focus, .hvr-grow:active {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+.input1 {
+    float: left;
+    width: 45%;
+}
+.input2 {
+    float: right;
+    width: 45%;
 }
 
-#enrollUserInfoDiv{
-	text-align: center;
-	display: block;
-	margin: auto;
+.input1 p {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    color: #4E637A;
+}
+.input2 p {
+    display: block;
+    font-family: 'Roboto', sans-serif;
+    color: #4E637A;
+
 }
 
-.pageMargins{
-	margin: 0px 30px 0px 30px;
+.signUpInput{
+    width: 95%;
+    border-radius: 6px;
+    background-color: #F2F2F2;
+    outline:none;
+    border:none;
+    display: block;
+    height: 40px;
+    font-size: 14px;
 }
-/* Global Styles s*/
+.fullSizeInputs{
+    margin: auto;
+    left: 50%;
+    width: 65%;
+}
+.fullSizeInputs p{
+     display: block;
+    font-family: 'Roboto', sans-serif;
+    color: #4E637A;   
+}
+
+
+.fullWidthInput{
+    width: 98%;
+    border-radius: 6px;
+    background-color: #F2F2F2;
+    outline:none;
+    border:none;
+    height: 40px;
+    font-size: 14px; 
+}
 .pageTitleBar{
-	padding: 10px;
-	display: block;
-	text-align: center;
-	background-color: #3cf;
-	text-align: center;
-	font-size: 36px;
-	color: #fff;
-
+    background-color: #4E637A;
+    margin-top: 0;
+    display: table;
+    height: 100px;
+    width: 100%;
+    text-align: center;
 }
-h1{
-	text-align: center;
-}
-
-.recordVoiceButton{
-	display:block;
-	margin: auto;
-	padding: 10px;
-	font-size: 16px;
-	background-color: #3cf;
-	text-align: center;
-	color: #fff;
-	border: 1px solid #3cf;
-	border-radius: 5px;
-	cursor: pointer;
+span {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 4%;
 }
 
 
-#recStatusContainer{
-	padding-top: 30px;
-	display: block;
-	margin: auto;
-	text-align: center;
-}
-
-#recordingStatus{
-	text-align: center;
-	color: red;
-}
-
-h3{
-	text-align: center;
-}
-
-/* Index Page Styles */
-.enrollButton{
-	display:block;
-	margin: auto;
-	padding: 10px;
-	font-size: 16px;
-	background-color: #3cf;
-	text-align: center;
-	color: #fff;
-	border: 1px solid #3cf;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
-#enrollButton:hover{
-	cursor: pointer;
-	background-color: #6cf;
+.pageTitleBar h1{
+    margin-top: 0;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    font-weight: 300;
 }
 
 
+.content-block {
+  position: relative;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: lighter;
+    margin-bottom: 5%;
+}
+.content-block .check1{
+  position: absolute;
+  left: 20%; bottom: 0;
+  width: 64px; height: 64px; margin: -32px;
+
+}
+
+.content-block .check1 img{
+    width: 100%;
+    height: 100%;
+}
+
+.content-block .check2{
+  position: absolute;
+  left: 50%; bottom: 0;
+  width: 64px; height: 64px; margin: -32px;
+}
+.content-block .check2 img{
+    width: 100%;
+    height: 100%;
+}
+
+.content-block .check3{
+  position: absolute;
+  left: 80%; bottom: 0;
+  width: 64px; height: 64px; margin: -32px;
+}
+
+.content-block .check3 img{
+    width: 100%;
+    height: 100%;
+}
+
+
+#submit{
+    display: block;
+    margin: auto;
+    -webkit-appearance: none;
+    width: 14em;    
+    height: 4em;
+    outline: none;
+    border: none;
+    margin-top: 5%;
+    border-radius: 5px;
+    background-color: #6FCF97;
+    color: white;
+
+    }
 #introP{
-	padding: 5px;
-	text-align: center;
-	display: block;
-	margin: auto;
+    margin-top:12%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    text-align: center;
+}
+
+#beginButton{
+    display: block;
+    margin: auto;
+    -webkit-appearance: none;
+    width: 11em;    
+    height: 4em;
+    outline: none;
+    border: none;
+    margin-top: 5%;
+    border-radius: 5px;
+    background-color: #6FCF97;
+    color: white;  
+    margin: auto;
+    font-size: 14px;
+}
+
+
+#recordVoiceButton {
+    display: block;
+    margin:auto;
+    background-color: #6FCF97; /* make the button transparent */
+    background-repeat: no-repeat;  /* make the background image appear only once */
+    border: none;           /* assuming we don't want any borders */
+    cursor: pointer;        /* make the cursor like hovering over an <a> element */
+    border-radius: 50%;
+    display: block;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-top: 2%;
+
+}
+
+.micImg{
+    width: 50%;
+    height: 50%;
+}
+#enrollmentContainer p{
+    text-align: center;
+}
+#enrollmentContainer label{
+    display: inline-block;
+}
+#firstInstruction{
+    margin-top: 10%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    color: #6FCF97;
+    font-size: 16px;
+
+}
+#phrase{
+    font-family: 'Roboto', sans-serif;
+    font-weight: 100;
+    font-size: 20px;
+    margin-top: 35px;
+}
+
+#numEnrolled{
+    display: inline-block;
+    color: #EB5757;
+}
+.recStatusContainer{
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+
+}
+.recStatusContainer label{
+    text-align: center;
+    font-weight: 100;
+    color: #6FCF97;
+}
+
+
+#recordingStatusText{
+    font-style: italic;
+    color: #BDBDBD;
+    margin-top: 3%;
+
 }

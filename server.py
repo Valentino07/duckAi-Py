@@ -56,7 +56,7 @@ def index():
 		return redirect(url_for('enrollVoice'))
 
 	else:
-		return render_template('index.html')
+		return render_template('begin.html')
 
 # The Enrollment Page, where Audio gets recorded and processed
 @app.route('/enrollVoice', methods=['POST', 'GET'])
@@ -128,11 +128,11 @@ def enrollVoice():
 		# 	db.users.insert(userData)
 		# 	return str(userData)
 
-		return render_template('recordVoice.html', data=data, numberOfTimesEnrolled = "You have to enroll this amount of time: " + str(numberOfTimesEnrolled) + " times", recordingUserAudio = "Recording User Audio = " + str(recordingAudio))
+		return render_template('recordVoice.html', data=data, numberOfTimesEnrolled = str(numberOfTimesEnrolled) + " times", recordingUserAudio = "Recording User Audio = " + str(recordingAudio))
 		
 	else:
 		#return jsonify(numberOfTimesEnrolled=numberOfTimesEnrolled)
-		return render_template('recordVoice.html', data=data, numberOfTimesEnrolled = "You have to enroll this amount of time: " + str(numberOfTimesEnrolled) + " times", recordingUserAudio = "Recording User Audio = " + str(recordingAudio))
+		return render_template('recordVoice.html', data=data, numberOfTimesEnrolled = str(numberOfTimesEnrolled) + " times", recordingUserAudio = "Recording User Audio = " + str(recordingAudio))
 
 # This is the page were we get the user's Name
 @app.route('/enrollUserInfo', methods=['POST', 'GET'])
@@ -162,7 +162,7 @@ def enrollUserInfo():
 		db.users.insert(userData)
 		return redirect(url_for('index'))
 	else:
-		return render_template('enrollUserInfo.html')
+		return render_template('enroll.html')
 
 
 """
