@@ -40,6 +40,12 @@ connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
 db = connection["cube-traffic"]
 db.authenticate("admin", "admin")
 
+
+import pyttsx3
+engine = pyttsx3.init()
+
+
+
 # Defined the DB's Collection for Traffic
 traffic = db.traffic
 userProfiles = db.users
@@ -101,32 +107,39 @@ def listen():
 				system("Well that's rude")
 
 			if groupQueryInit:
-				system("say Say hey duck i'm entering. or say hey duck i'm leaving")
+				engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
+				engine.runAndWait()
+				#system("say Say hey duck i'm entering. or say hey duck i'm leaving")
 				print("say hey duck i'm entering. or say hey duck i'm leaving")
 				print("playing sound FX...")
 				mixer.music.play(loops = 0, start = 0.0)
 				duckQueryInit = True
 
 			if "Hey Duck" in userSpeech:
-				system("say Hello, what group are you from?")
+				engine.say("Hello, what group are you from?")
+				engine.runAndWait()				
+				#system("say Hello, what group are you from?")
 				print("Hello, what group are you from?")
 				
 				mixer.music.play(loops = 0, start = 0.0)
 				groupQueryInit = True
 
 			elif "hey duck" in userSpeech:
-				system('say Hello, are you entering or leaving')
-				print("Hello, say hey duck i'm entering. or say hey duck i'm leaving")
+				engine.say("Hello, what group are you from?")
+				engine.runAndWait()
+				print("Hello, what group are you from?")		
 				duckQueryInit = True
 
 			elif "Hey Doug" in userSpeech:
-				system('say Hello, are you entering or leaving')
-				print("Hello, say hey duck i'm entering. or say hey duck i'm leaving")
+				engine.say("Hello, what group are you from?")
+				engine.runAndWait()
+				print("Hello, what group are you from?")		
 				duckQueryInit = True
 
 			elif "hey doug" in userSpeech:
-				system('say Hello, are you entering or leaving')
-				print("Hello, say hey duck i'm entering. or say hey duck i'm leaving")
+				engine.say("Hello, what group are you from?")
+				engine.runAndWait()
+				print("Hello, what group are you from?")		
 				duckQueryInit = True
 
 		# Look for a audio file to text converter, you send the audio file to a funciton and it outputs text
@@ -178,8 +191,9 @@ def listen():
 			identifiedSpeaker = ""
 			# Handles cases when the user says they're entering	
 			if "I'm entering" in str(audioTranscripter.speechRecognized):
-				print("Processing your input...")
-				system('say Processing your input...')
+				engine.say("Processing your input, please wait.")
+				engine.runAndWait()
+				print("Processing your input, please wait.")
 				identify_file(subscriptionKey, newFilePath, True, allUserIds)
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
@@ -197,8 +211,8 @@ def listen():
 
 					# Says welcome to the Identified Speaker
 					print("Welcome " + identifiedSpeaker)
-					system("say Welcome" + identifiedSpeaker)
-					#sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
+					engine.say("Welcome" + identifiedSpeaker)
+					sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
 
 					userData = {
 						"fullName":identifiedSpeaker,
@@ -215,13 +229,15 @@ def listen():
 			# Handles cases when the user says they're leaving	
 			elif "I'm leaving" in str(audioTranscripter.speechRecognized):
 
-				print("Processing your input...")
-				system('say currently processing your input please wait...')
+				engine.say("Processing your input, please wait.")
+				engine.runAndWait()
+				print("Processing your input, please wait.")
 				
 				identify_file(subscriptionKey, newFilePath, True, allUserIds)
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-					system("say Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					engine.say("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					engine.runAndWait()
 					print("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
 				else:
 					# Based on the ID returned it assigns that ID to a specific person
@@ -234,11 +250,11 @@ def listen():
 						parentPhoneNumber = user['parentPhoneNumber']
 						print("parentPhoneNumber = " + parentPhoneNumber)
 
-					print("Welcome " + identifiedSpeaker)
+					print("Goodbye " + identifiedSpeaker)
 					# Says good bye to the Identified Speaker
-					system("say Goodbye "+ identifiedSpeaker)
+					engine.say("Goodbye "+ identifiedSpeaker)
 					duckQueryInit = False
-					#sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
+					sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
 
 					userData = {
 						"fullName":identifiedSpeaker,
@@ -250,7 +266,7 @@ def listen():
 					db.traffic.insert(userData)
 					allUserIds = []
 			else:
-				system("say Say Hey Duck I'm Entering or Hey Duck I'm Leaving")
+				engine.say("Say Hey Duck I'm Entering or Hey Duck I'm Leaving")
 
 	except sr.UnknownValueError:
 		print("Google Speech Recognition could not understand audio")
