@@ -40,7 +40,7 @@ connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
 db = connection["cube-traffic"]
 db.authenticate("admin", "admin")
 
-
+import pywintypes
 import pyttsx3
 engine = pyttsx3.init()
 
@@ -64,11 +64,13 @@ CHUNK_SIZE = 64700
 FORMAT = pyaudio.paInt16
 RATE = 211600
 
-
 mixer.init()
 mixer.music.load('C:/Users/duoma/Desktop/ducky/vgBeep2.wav')
 
 groupQueryInit = False
+
+userGroup = None
+
 # mixer.init()
 # mixer.pre_init(frequency=0 ,size=16,channels=2)
 # print("mixer initialized")
@@ -80,6 +82,7 @@ def listen():
 	global userSpeech 
 	global duckQueryInit
 	global groupQueryInit
+	global userGroup
 
 	conversationInit = False
 	# Record Audio
@@ -107,6 +110,17 @@ def listen():
 				system("Well that's rude")
 
 			if groupQueryInit:
+				# Places user in a group
+				if "1"  in userSpeech:
+					print("*User is from Group 1*")
+					userGroup = 1
+				elif "2"  in userSpeech:
+					print("*User is from Group 2*")
+					userGroup = 2
+				elif "3"  in userSpeech:
+					print("*User is from Group 3*")
+					userGroup = 3
+
 				engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
 				engine.runAndWait()
 				#system("say Say hey duck i'm entering. or say hey duck i'm leaving")
@@ -185,8 +199,10 @@ def listen():
 				userIds = user['profileId']
 				if userIds not in allUserIds:
 					allUserIds.append(userIds)
+					if len(allUserIds) == 10:
+						allUserIds.pop[0:11] = GroupOne
+						print (GroupOne)
 					print(allUserIds)
-
 
 			identifiedSpeaker = ""
 			# Handles cases when the user says they're entering	
@@ -194,7 +210,13 @@ def listen():
 				engine.say("Processing your input, please wait.")
 				engine.runAndWait()
 				print("Processing your input, please wait.")
-				identify_file(subscriptionKey, newFilePath, True, allUserIds)
+
+				if userGroup == 1:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
+				if userGroup == 2:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
+				if userGroup == 3:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])		
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
 					system("say Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
@@ -233,7 +255,12 @@ def listen():
 				engine.runAndWait()
 				print("Processing your input, please wait.")
 				
-				identify_file(subscriptionKey, newFilePath, True, allUserIds)
+				if userGroup == 1:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
+				if userGroup == 2:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
+				if userGroup == 3:
+					identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
 					engine.say("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")

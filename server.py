@@ -19,7 +19,9 @@ from EnrollProfile import enroll_profile
 from EnrollmentResponse import EnrollmentResponse
 from IdentificationServiceHttpClientHelper import IdentificationServiceHttpClientHelper
 
-filePath = "/Users/duoma/Desktop/ducky/audioRecorder/"
+
+
+filePath = "/Users/urban/Desktop/duckAi-Py-master/audioRecorder/"
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -30,7 +32,28 @@ connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
 db = connection["cube-traffic"]
 db.authenticate("admin", "admin")
 # Defined the DB's Collection for User's
-users = db.users
+
+userProfiles = db.users
+
+users = []
+
+for user in userProfiles.find():
+	users.append(user)
+
+def setUserGroup():
+	print(users)
+	userGroupNum = None
+	if len(users) <= 10:
+		print("User placed in Group 1")
+		userGroupNum = '1'
+	elif len(users) <=  20:
+		print("User placed in Group 2")
+		userGroupNum = '2'
+	elif len(users) <= 30:
+		print("User placed in Group 3")
+		userGroupNum = '3'
+
+	return userGroupNum
 
 #Azure Parameters that need to be filled with automatic goodness :)
 subscriptionKey = "b51342b216294701b97755a73f959ba4"
@@ -45,6 +68,8 @@ recordingAudio = False
 profileId = None
 # Initializes Create Profile class
 CreateProfile = CreateProfile(profileId)
+
+
 
 # Essentially the Home Page of Enrollment
 @app.route('/', methods=['POST', 'GET'])
@@ -63,7 +88,7 @@ def index():
 def enrollVoice():
 
 	# The path where the audio file is stored, the specific .wav file used to record this is added to the var filePath
-	filePath = "/Users/duoma/Desktop/ducky/"
+	filePath = "/Users/urban/Desktop/duckAi-Py-master/"
 	error = None
 	global numberOfTimesEnrolled
 	global recordingAudio
@@ -139,8 +164,9 @@ def enrollVoice():
 def enrollUserInfo():
 	now = datetime.datetime.now()
 	date =  str(now.month) + "/" + str(now.day) + "/" + str(now.year)
-
 	sendForm = False
+
+
 	if 'enrollUserInfo' in request.form:
 		firstName = request.form['first-name']
 		lastName = request.form['last-name']
@@ -150,16 +176,20 @@ def enrollUserInfo():
 		fullName = firstName + " " + lastName
 		sendForm = True
 
+
+
 	if sendForm:
+		userGroup = setUserGroup()
 		# Creates an Object that can be used to store data in our DB
 		userData = {
 			"fullName":fullName,
 			"profileId":CreateProfile.profileId,
+			"userGroup":userGroup,
 			"emailAddress": emailAddress,
 			"parentPhoneNumber":parentPhoneNumber,
 			"dateCreated": date
 		}
-		db.users.insert(userData)
+		db.userProfiles.insert(userData)
 		return redirect(url_for('index'))
 	else:
 		return render_template('enroll.html')
@@ -169,7 +199,7 @@ def enrollUserInfo():
 @app.route('/signup', methods=['POST', 'GET'])
 
 def signup():
-	filePath = "/Users/txt-19/Desktop/duckAi-py/RECORDING.wav"
+	filePath = "/Users/txt-19/Desktop/duckAi-Py-master/RECORDING.wav"
 	sendForm = False
 	error = None
 	
