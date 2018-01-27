@@ -210,17 +210,41 @@ def listen():
 				engine.say("Processing your input, please wait.")
 				engine.runAndWait()
 				print("Processing your input, please wait.")
+				print("userGroup =" + str(userGroup))
+				
+				if userGroup == 1: 
+					if len(allUserIds[0:10]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
+					else:
+						engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
+						engine.runAndWait()
+						duckQueryInit = False	
+						break
+				
+				if userGroup == 2: 
+					if len(allUserIds[10:20]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
+					else:
+						engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
+						engine.runAndWait()
+						duckQueryInit = False
+						break	
+				
+				if userGroup == 3 :
+					if len(allUserIds[20:30]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
+					else:
+						engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
+						engine.runAndWait()	
+						duckQueryInit = False	
+						break		
 
-				if userGroup == 1:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
-				if userGroup == 2:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
-				if userGroup == 3:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])		
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-					system("say Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
-					print("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
+					engine.runAndWait()
+					print("Sorry it seems like something has gone wrong, Please Restart the Duck.")
+					
 				else:
 					# Based on the ID returned it assigns that ID to a specific person
 					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}): 
@@ -255,17 +279,37 @@ def listen():
 				engine.runAndWait()
 				print("Processing your input, please wait.")
 				
-				if userGroup == 1:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
-				if userGroup == 2:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
-				if userGroup == 3:
-					identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
+				if userGroup == 1: 
+					if len(allUserIds[0:10]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
+					else:
+						engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
+						engine.runAndWait()
+						duckQueryInit = False	
+						break
+				
+				if userGroup == 2: 
+					if len(allUserIds[10:20]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
+					else:
+						engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
+						engine.runAndWait()
+						duckQueryInit = False
+						break	
+				
+				if userGroup == 3 :
+					if len(allUserIds[20:30]) > 1:
+						identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
+					else:
+						engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
+						engine.runAndWait()	
+						duckQueryInit = False	
+						break
 
 				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-					engine.say("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
 					engine.runAndWait()
-					print("Sorry but it seems like you haven't enrolled. Can you do that please before logging in?")
+					print("Sorry it seems like something has gone wrong, Please Restart the Duck.")
 				else:
 					# Based on the ID returned it assigns that ID to a specific person
 					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
