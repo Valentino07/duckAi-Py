@@ -7,12 +7,7 @@ sys.path.append('../Identification')
 sys.path.append('../audioRecorder')
 import os
 from os import system
-from gtts import gTTS
-tts = gTTS(text='Good morning', lang='en')
-tts.save("good.mp3")
-os.system("mpg321 good.mp3")
 
- 
 import time
 from datetime import datetime
 userSpeech = ""
@@ -40,17 +35,18 @@ from audioTranscriber import *
 # SMS
 from send_sms import sendTrafficTextNotification
 
+from tts_watson.TtsWatson import TtsWatson 
+
+ttsWatson = TtsWatson('d990c9aa-df86-4142-995a-63b42be725f1', 'gXVEQQ2V2SqU', 'en-US_AllisonVoice') # en-US_AllisonVoice is a voice from watson you can found more to: https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/text-to-speech/using.shtml#voices 
+ttsWatson.play("The text which i want to be a sound") 
+
 # Traffic DB
 import pymongo
 connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
 db = connection["cube-traffic"]
 db.authenticate("admin", "admin")
 
-<<<<<<< HEAD
 # import pywintypes
-=======
-import pywintypes
->>>>>>> 6daac8a0941cd500c4d567426ff591d23c74880b
 import pyttsx3
 engine = pyttsx3.init()
 
@@ -90,11 +86,9 @@ userGroup = None
 
 def duckQuery():
     global groupQueryInit
-    #engine.say("Hello, what group are you from?")
-    #engine.runAndWait()
+    engine.say("Hello, what group are you from?")
+    engine.runAndWait()
     print("Hello, what group are you from?")
-    mixer.music.load('./groupQuery.wav')
-    mixer.music.play(loops = 0, start = 0.0)
     mixer.music.load('../vgBeep2.wav')
     mixer.music.play(loops = 0, start = 0.0)
     groupQueryInit = True
@@ -107,8 +101,6 @@ def identifyUser(trafficType):
 	global date
 	global logSmsTime
 	global clockTime
-	mixer.music.load('./leavingOrEntering.wav')
-	mixer.music.play(loops = 0, start = 0.0)
 	print("Processing your input, please wait.")
 	
 	print("userGroup =" + str(userGroup))
@@ -116,29 +108,29 @@ def identifyUser(trafficType):
 			if len(allUserIds[0:10]) > 1:
 					identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
 			else:
-					# engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
-					# engine.runAndWait()
+					engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
+					engine.runAndWait()
 					print("There have not been any users enrolled in yet. Please enroll before trying to using the duck.")
 					duckQueryInit = False	
 	elif userGroup == 2: 
 			if len(allUserIds[10:20]) > 1:
 					identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
 			else:
-					# engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
-					# engine.runAndWait()
+					engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
+					engine.runAndWait()
 					print("Group 2 does not exist")
 					duckQueryInit = False	
 	elif userGroup == 3 :
 			if len(allUserIds[20:30]) > 1:
 					identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
 			else:
-					# engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
-					# engine.runAndWait()
+					engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
+					engine.runAndWait()
 					print("Group 3 Does not Exist")	
 					duckQueryInit = False	
 	if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-			# engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
-			# engine.runAndWait()
+			engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
+			engine.runAndWait()
 			print("Sorry it seems like something has gone wrong, Please Restart the Duck.")
 			
 	else:
@@ -221,27 +213,18 @@ def listen():
 					print("*User is from Group 3*")
 					userGroup = 3
 
-<<<<<<< HEAD
 				#engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
 				#engine.runAndWait()
-=======
 				engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
 				engine.runAndWait()
->>>>>>> 6daac8a0941cd500c4d567426ff591d23c74880b
 				#system("say Say hey duck i'm entering. or say hey duck i'm leaving")
-				mixer.music.load('./leavingOrEntering.wav')
-				mixer.music.play(loops = 0, start = 0.0)
 				mixer.music.load('../vgBeep2.wav')
 				mixer.music.play(loops = 0, start = 0.0)
 				print("say hey duck i'm entering. or say hey duck i'm leaving")
 				print("playing sound FX...")
-				mixer.music.play(loops = 0, start = 0.0)
 				duckQueryInit = True
 
-			if "Hey Duck" in userSpeech:
-				# engine.say("Hello, what group are you from?")
-				# engine.runAndWait()				
-				#system("say Hello, what group are you from?")
+			if "Hey Duck" in userSpeech:	
 				duckQuery()
 			elif "hey duck" in userSpeech:
 				duckQuery()
@@ -282,7 +265,7 @@ def listen():
 			groupQueryInit = False
 			recordVoice()
 			print("Done Recording!")
-			newFilePath = '/home/pi/Desktop/duckAi-Py/duckRecognition/'+str(recordVoice.FULL_FILE_NAME)
+			newFilePath = '/Users/duoma/Desktop/ducky/duckRecognition/'+str(recordVoice.FULL_FILE_NAME)
 			print("newFilePath = "+ newFilePath)
 			audioTranscripter(newFilePath)
 			
@@ -301,145 +284,10 @@ def listen():
 			identifiedSpeaker = ""
 			# Handles cases when the user says they're entering	
 			if "I'm entering" in str(audioTranscripter.speechRecognized):
-<<<<<<< HEAD
-				# engine.say("Processing your input, please wait.")
-				# engine.runAndWait()
 				identifyUser("entering")
-				# Says welcome to the Identified Speaker
 			# Handles cases when the user says they're leaving	
 			elif "I'm leaving" in str(audioTranscripter.speechRecognized):
 				identifyUser("leaving")
-=======
-				engine.say("Processing your input, please wait.")
-				engine.runAndWait()
-				print("Processing your input, please wait.")
-				print("userGroup =" + str(userGroup))
-				
-				if userGroup == 1: 
-					if len(allUserIds[0:10]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
-					else:
-						engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
-						engine.runAndWait()
-						duckQueryInit = False	
-						break
-				
-				if userGroup == 2: 
-					if len(allUserIds[10:20]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
-					else:
-						engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
-						engine.runAndWait()
-						duckQueryInit = False
-						break	
-				
-				if userGroup == 3 :
-					if len(allUserIds[20:30]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
-					else:
-						engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
-						engine.runAndWait()	
-						duckQueryInit = False	
-						break		
-
-
-				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-					engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
-					engine.runAndWait()
-					print("Sorry it seems like something has gone wrong, Please Restart the Duck.")
-					
-				else:
-					# Based on the ID returned it assigns that ID to a specific person
-					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}): 
-						identifiedSpeaker = user['fullName']
-						print("Identified Speaker = " + identifiedSpeaker)
-
-					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-						parentPhoneNumber = user['parentPhoneNumber']
-						print("parentPhoneNumber = " + parentPhoneNumber)
-
-					# Says welcome to the Identified Speaker
-					print("Welcome " + identifiedSpeaker)
-					engine.say("Welcome" + identifiedSpeaker)
-					sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
-
-					userData = {
-						"fullName":identifiedSpeaker,
-						"profileId":identify_file.identifiedSpeakerId,
-						"trafficQuery":"Entered",
-						"date": date,
-						"time": clockTime
-					}
-
-					db.traffic.insert(userData)
-					allUserIds = []
-					duckQueryInit = False
-
-			# Handles cases when the user says they're leaving	
-			elif "I'm leaving" in str(audioTranscripter.speechRecognized):
-
-				engine.say("Processing your input, please wait.")
-				engine.runAndWait()
-				print("Processing your input, please wait.")
-				
-				if userGroup == 1: 
-					if len(allUserIds[0:10]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[0:10])
-					else:
-						engine.say("There has not been any users enrolled in yet. Please enroll before trying to using the duck.")
-						engine.runAndWait()
-						duckQueryInit = False	
-						break
-				
-				if userGroup == 2: 
-					if len(allUserIds[10:20]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[10:20])
-					else:
-						engine.say("Group 2 does not exist. If you forgot your group number, please ask an administrator for it.")
-						engine.runAndWait()
-						duckQueryInit = False
-						break	
-				
-				if userGroup == 3 :
-					if len(allUserIds[20:30]) > 1:
-						identify_file(subscriptionKey, newFilePath, True, allUserIds[20:30])
-					else:
-						engine.say("Group 3 does not exist. If you forgot your group number, please ask an administrator for it.")
-						engine.runAndWait()	
-						duckQueryInit = False	
-						break
-
-				if identify_file.identifiedSpeakerId == '00000000-0000-0000-0000-000000000000':
-					engine.say("Sorry it seems like something has gone wrong, Please Restart the Duck.")
-					engine.runAndWait()
-					print("Sorry it seems like something has gone wrong, Please Restart the Duck.")
-				else:
-					# Based on the ID returned it assigns that ID to a specific person
-					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-						identifiedSpeaker = user['fullName']
-						print("Identified Speaker = " + identifiedSpeaker)
-
-
-					for user in userProfiles.find({'profileId':identify_file.identifiedSpeakerId}):
-						parentPhoneNumber = user['parentPhoneNumber']
-						print("parentPhoneNumber = " + parentPhoneNumber)
-
-					print("Goodbye " + identifiedSpeaker)
-					# Says good bye to the Identified Speaker
-					engine.say("Goodbye "+ identifiedSpeaker)
-					duckQueryInit = False
-					sendTrafficTextNotification(identifiedSpeaker + " came into the cube " + logSmsTime, parentPhoneNumber)
-
-					userData = {
-						"fullName":identifiedSpeaker,
-						"profileId":identify_file.identifiedSpeakerId,
-						"trafficQuery":"Left",
-						"date": date,
-						"time": clockTime
-					}
-					db.traffic.insert(userData)
-					allUserIds = []
->>>>>>> 6daac8a0941cd500c4d567426ff591d23c74880b
 			else:
 				# engine.say("Say Hey Duck I'm Entering or Hey Duck I'm Leaving")
 				print("Say Hey Duck I'm Entering or Hey Duck I'm Leaving")

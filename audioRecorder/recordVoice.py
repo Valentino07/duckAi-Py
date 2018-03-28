@@ -6,7 +6,7 @@ from array import array
 global audioFileName
 
 def recordVoice():
-    pickle_in = open("/home/pi/Desktop/duckAi-Py/audioRecorder/file_number.pickle","rb")
+    pickle_in = open("./file_number.pickle","rb")
     file_number = pickle.load(pickle_in)
     updated_file_number = pickle.load(pickle_in)
 
