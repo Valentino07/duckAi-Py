@@ -17,6 +17,7 @@ pyttsx = "*"
 pygame = "*"
 twilio = "*"
 flask-socketio = "*"
+"pypiwin32" = "*"
 
 
 [dev-packages]

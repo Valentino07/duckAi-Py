@@ -35,11 +35,6 @@ from audioTranscriber import *
 # SMS
 from send_sms import sendTrafficTextNotification
 
-from tts_watson.TtsWatson import TtsWatson 
-
-ttsWatson = TtsWatson('d990c9aa-df86-4142-995a-63b42be725f1', 'gXVEQQ2V2SqU', 'en-US_AllisonVoice') # en-US_AllisonVoice is a voice from watson you can found more to: https://www.ibm.com/smarterplanet/us/en/ibmwatson/developercloud/doc/text-to-speech/using.shtml#voices 
-ttsWatson.play("The text which i want to be a sound") 
-
 # Traffic DB
 import pymongo
 connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
@@ -101,6 +96,7 @@ def identifyUser(trafficType):
 	global date
 	global logSmsTime
 	global clockTime
+	engine.say("Processing your input, please wait.")
 	print("Processing your input, please wait.")
 	
 	print("userGroup =" + str(userGroup))
