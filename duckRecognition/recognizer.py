@@ -7,78 +7,51 @@ sys.path.append('../Identification')
 sys.path.append('../audioRecorder')
 import os
 from os import system
-
 import time
 from datetime import datetime
-userSpeech = ""
-newFilePath = ""
-# Azure
-from IdentificationServiceHttpClientHelper import *
-from IdentifyFile import *
-
-# Audio Recorder
-from recordVoice import *
-
-# Pygame (Plays Audio File)
 import pygame
 from pygame import mixer
-
-# Speech to Text
 import speech_recognition as sr
-
-# Text to Speech
-# import pyttsx3
-
 # Audiofile to Text
 from audioTranscriber import *
-
-# SMS
+# SMS Lib
 from send_sms import sendTrafficTextNotification
-
-# Traffic DB
+# Audio Recorder module
+from recordVoice import *
+# Azure Module
+from IdentificationServiceHttpClientHelper import *
+from IdentifyFile import *
 import pymongo
-connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
-db = connection["cube-traffic"]
-db.authenticate("admin", "admin")
-
-# import pywintypes
+# import pywintypes <---- For WINDOWS 'say'
 import pyttsx3
 engine = pyttsx3.init()
 
 
-
+# MongoDB
+connection = pymongo.MongoClient('ds119223.mlab.com', 19223)
+db = connection["cube-traffic"]
+db.authenticate("admin", "admin")
 # Defined the DB's Collection for Traffic
 traffic = db.traffic
 userProfiles = db.users
-
-# Good for getting names but not good for getting profileIds
-allUserIds = []
-users = []
-
 # Azure Subscription Key
 subscriptionKey = 'b51342b216294701b97755a73f959ba4'
-
+# Pygame Mixer
+mixer.init()
+# Duck Global Vars
 duckQueryInit = False
-
-# Sets input device
+userSpeech = ""
+newFilePath = ""
+groupQueryInit = False
+userGroup = None
+allUserIds = []
+users = []
+# Input Device Vars
 CHUNK_SIZE = 64700
 FORMAT = pyaudio.paInt16
 RATE = 211600
 
-mixer.init()
-
-
-groupQueryInit = False
-
-userGroup = None
-
-# mixer.init()
-# mixer.pre_init(frequency=0 ,size=16,channels=2)
-# print("mixer initialized")
-# mixer.music.load('C:/Users/duoma/Desktop/ducky/vgBeep2.wav')
-# print("sound FX loaded")
-
-
+# Finds out what group the user is in
 def duckQuery():
     global groupQueryInit
     engine.say("Hello, what group are you from?")
@@ -87,6 +60,7 @@ def duckQuery():
     mixer.music.load('../vgBeep2.wav')
     mixer.music.play(loops = 0, start = 0.0)
     groupQueryInit = True
+# Identifies the user and logs them in the DB
 def identifyUser(trafficType):
 	global userGroup
 	global duckQueryInit
@@ -96,8 +70,6 @@ def identifyUser(trafficType):
 	global date
 	global logSmsTime
 	global clockTime
-	engine.say("Processing your input, please wait.")
-	print("Processing your input, please wait.")
 	
 	print("userGroup =" + str(userGroup))
 	if userGroup == 1: 
@@ -174,15 +146,15 @@ def identifyUser(trafficType):
 					allUserIds = []	
 					duckQueryInit = False	
 
+# Listens for what the User says
 def listen():
-	# Gives function access to outside variables
 	global userSpeech 
 	global duckQueryInit
 	global groupQueryInit
 	global userGroup
 
 	conversationInit = False
-	# Record Audio
+
 	r = sr.Recognizer()
 	r.energy_threshold = 4000
 	if not duckQueryInit:
@@ -190,9 +162,6 @@ def listen():
 			print("Listening...")
 			audio = r.listen(source)
 	try:
-		# for testing purposes, we're just using the default API key
-		# to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-		# instead of `r.recognize_google(audio)`
 		if not duckQueryInit:
 			print("You said: " + r.recognize_google(audio))
 			userSpeech = r.recognize_google(audio)
@@ -208,9 +177,6 @@ def listen():
 				elif "3"  in userSpeech:
 					print("*User is from Group 3*")
 					userGroup = 3
-
-				#engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
-				#engine.runAndWait()
 				engine.say("Say hey duck i'm entering. or say hey duck i'm leaving")
 				engine.runAndWait()
 				#system("say Say hey duck i'm entering. or say hey duck i'm leaving")
@@ -257,24 +223,29 @@ def listen():
 				minute = str(minute)
 			clockTime = hour + ":" + minute + " " + meridiem
 
+			# Records Audio
 			print("Recording Audio...")
 			groupQueryInit = False
 			recordVoice()
 			print("Done Recording!")
+			# Allows user to know that their conversation is being processed
+			engine.say("Processing your input, please wait.")
+			engine.runAndWait()
+			print("Processing your input, please wait.")
+
+			# Creates a file path that can be send to Azure
 			newFilePath = '/Users/duoma/Desktop/ducky/duckRecognition/'+str(recordVoice.FULL_FILE_NAME)
 			print("newFilePath = "+ newFilePath)
+			# Translate audio file into text
 			audioTranscripter(newFilePath)
 			
 			logSmsTime = "on " + date + " at " + clockTime
 			
-
+			# Adds azure profileIds to an Array
 			for user in userProfiles.find():
 				userIds = user['profileId']
 				if userIds not in allUserIds:
 					allUserIds.append(userIds)
-					if len(allUserIds) == 10:
-						allUserIds.pop[0:11] = GroupOne
-						print (GroupOne)
 					print(allUserIds)
 
 			identifiedSpeaker = ""
@@ -293,11 +264,10 @@ def listen():
 	except sr.RequestError as e:
 		print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-starttime=time.time()
+starttime = time.time()
 
-# Allows the duck to continuously run
+# Loop that runs the duck
 while True:
 	listen()
 	print("duckQueryInit = " + str(duckQueryInit))
-	print ("tick")
 	time.sleep(1.0 - ((time.time() - starttime) % 1.0))                                                                 
